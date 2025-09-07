@@ -45,10 +45,7 @@ INSTALLED_APPS = [
     'decouple',
 
     # Local apps
-    'core',
-    'users',
     'payments',
-    'currencies',
 ]
 
 MIDDLEWARE = [
