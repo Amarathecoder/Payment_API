@@ -42,16 +42,21 @@ class TransactionViewSet(viewsets.ModelViewSet):
         # Fetch conversion if currencies differ
         if customer_currency != merchant_currency:
             try:
-                url = f"https://api.exchangerate.host/convert?from={customer_currency}&to={merchant_currency}&amount={transaction.amount}"
+                url = f"https://api.exchangerate-api.com/v4/latest/{customer_currency}"
                 response = requests.get(url)
                 data = response.json()
 
-                converted_amount = Decimal(data["result"])
-                exchange_rate = Decimal(data["info"]["rate"])
+                # Get the exchange rate, fallback to 1 if not found
+                exchange_rate = Decimal(data["rates"].get(merchant_currency, 1))
 
+                # Calculate converted amount
+                converted_amount = transaction.amount * exchange_rate
+
+                # Save conversion details
                 transaction.converted_amount = converted_amount
                 transaction.converted_currency = merchant_currency
                 transaction.exchange_rate = exchange_rate
+
             except Exception:
                 # If API fails, fallback to original amount & currency
                 transaction.converted_amount = transaction.amount

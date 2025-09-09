@@ -52,3 +52,46 @@ Technical Requirements
 4. Testing
     Unit tests for all core functionalities (pytest or Django’s built-in test framework).
     Mock payment gateway responses for testing without real transactions.
+
+
+# Payment API 💳
+
+A Django REST Framework-based **Payment API** that supports:
+- Merchant and customer management.
+- Multiple payment methods.
+- Secure transaction handling.
+- Refunds, payouts, invoices, and disputes.
+- Real-time currency conversion.
+
+---
+
+## 🚀 Features
+- **Merchant & Customer Management**
+- **Payment Methods** (Cards, Bank, Mobile Money, etc.)
+- **Transaction Processing** with automatic status updates.
+- **Refunds & Disputes** handling.
+- **Payouts & Invoices** support.
+- **Real-time Currency Conversion** via external API.
+
+---
+
+## 🛠 Tech Stack
+- **Backend:** Django, Django REST Framework
+- **Database:** PostgreSQL / MySQL (configurable)
+- **Authentication:** Token-based Authentication
+- **API Docs:** DRF Browsable API (Swagger optional)
+- **External APIs:** Exchange Rate API for currency conversion
+
+---
+
+## ⚡ Setup Instructions
+
+### **1. Clone the repository**
+```bash
+git clone https://github.com/<your-username>/payment-api.git
+cd payment-api
+
+
+📜 License
+
+This project is licensed under the MIT License.
