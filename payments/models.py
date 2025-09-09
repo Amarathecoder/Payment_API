@@ -60,7 +60,11 @@ class Transaction(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="transactions")
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    currency = models.CharField(max_length=10, choices=CURRENCY_CHOICES, default="NGN") 
+    currency = models.CharField(max_length=10, choices=CURRENCY_CHOICES, default="NGN")
+    original_currency = models.CharField(max_length=10)  # Currency customer paid with
+    converted_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    converted_currency = models.CharField(max_length=10, null=True, blank=True)  # Usually merchant's default
+    exchange_rate = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True)
     status = models.CharField(max_length=20, default="pending", choices=[     # pending, success, failed, refunded
         ('PENDING', 'Pending'),
         ('SUCCESS', 'Success'),

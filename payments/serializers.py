@@ -55,9 +55,14 @@ class TransactionSerializer(serializers.ModelSerializer):
             "payment_method_type", # Readable type
             "amount",
             "currency",
+            "original_currency",
+            "converted_amount",
+            "converted_currency",
+            "exchange_rate",
             "status",
-            "created_at"
+            "created_at",
         ]
+        read_only_fields = ["converted_amount", "converted_currency", "exchange_rate", "status"]
 
 
 class RefundSerializer(serializers.ModelSerializer):

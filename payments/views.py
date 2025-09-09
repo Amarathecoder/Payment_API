@@ -1,9 +1,18 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from .models import Merchant, Customer, PaymentMethod, Transaction, Refund, Payout, Invoice, Dispute
 from .serializers import MerchantSerializer, CustomerSerializer, PaymentMethodSerializer, TransactionSerializer
 from .serializers import RefundSerializer, PayoutSerializer, InvoiceSerializer, DisputeSerializer
+import requests
+from decimal import Decimal
+from rest_framework.response import Response
+from django.http import JsonResponse
 
 # Create your views here.
+def home(request):
+    return JsonResponse({
+        "message": "Welcome to the Payment API!",
+        "api_root": "/api/"
+    })
 
 class MerchantViewSet(viewsets.ModelViewSet):
     queryset = Merchant.objects.all()
@@ -23,6 +32,39 @@ class PaymentMethodViewSet(viewsets.ModelViewSet):
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
+
+    def perform_create(self, serializer):
+        transaction = serializer.save()
+        merchant_currency = transaction.merchant.default_currency
+        customer_currency = transaction.original_currency
+
+        # Fetch conversion if currencies differ
+        if customer_currency != merchant_currency:
+            try:
+                url = f"https://api.exchangerate.host/convert?from={customer_currency}&to={merchant_currency}&amount={transaction.amount}"
+                response = requests.get(url)
+                data = response.json()
+
+                converted_amount = Decimal(data["result"])
+                exchange_rate = Decimal(data["info"]["rate"])
+
+                transaction.converted_amount = converted_amount
+                transaction.converted_currency = merchant_currency
+                transaction.exchange_rate = exchange_rate
+            except Exception:
+                # If API fails, fallback to original amount & currency
+                transaction.converted_amount = transaction.amount
+                transaction.converted_currency = customer_currency
+                transaction.exchange_rate = Decimal("1.0")
+        else:
+            transaction.converted_amount = transaction.amount
+            transaction.converted_currency = merchant_currency
+            transaction.exchange_rate = Decimal("1.0")
+
+        # Simulate gateway payment outcome
+        from random import choice
+        transaction.status = choice(["SUCCESS", "FAILED", "PENDING"])
+        transaction.save()
 
 
 class RefundViewSet(viewsets.ModelViewSet):
