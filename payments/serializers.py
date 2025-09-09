@@ -15,12 +15,26 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 
 class PaymentMethodSerializer(serializers.ModelSerializer):
-    customer = serializers.StringRelatedField()
-    merchant = serializers.StringRelatedField()
+    customer_name = serializers.CharField(source="customer.name", read_only=True)
+    merchant_name = serializers.CharField(source="merchant.name", read_only=True)
 
     class Meta:
         model = PaymentMethod
-        fields = "__all__"
+        fields = [
+            "payment_method_id",
+            "customer",
+            "customer_name",
+            "merchant",
+            "merchant_name",
+            "type",
+            "provider",
+            "account_number",
+            "expiry_date",
+            "is_default",
+            "status",
+            "currency",
+            "created_at"
+        ]
 
 
 class TransactionSerializer(serializers.ModelSerializer):
@@ -44,35 +58,76 @@ class TransactionSerializer(serializers.ModelSerializer):
             "created_at"
         ]
 
-        
+
 class RefundSerializer(serializers.ModelSerializer):
-    transaction = serializers.StringRelatedField()
+    transaction_id = serializers.IntegerField(source="transaction.transaction_id", read_only=True)
+    merchant_name = serializers.CharField(source="transaction.merchant.name", read_only=True)
+    customer_name = serializers.CharField(source="transaction.customer.name", read_only=True)
 
     class Meta:
         model = Refund
-        fields = "__all__"
+        fields = [
+            "refund_id",
+            "transaction",
+            "transaction_id",
+            "merchant_name",
+            "customer_name",
+            "amount",
+            "reason",
+            "status",
+            "created_at"
+        ]
 
 
 class PayoutSerializer(serializers.ModelSerializer):
-    merchant = serializers.StringRelatedField()
+    merchant_name = serializers.CharField(source="merchant.name", read_only=True)
 
     class Meta:
         model = Payout
-        fields = "__all__"
+        fields = [
+            "payout_id",
+            "merchant",
+            "merchant_name",
+            "amount",
+            "currency",
+            "status",
+            "created_at"
+        ]
 
 
 class InvoiceSerializer(serializers.ModelSerializer):
-    customer = serializers.StringRelatedField()
-    merchant = serializers.StringRelatedField()
+    customer_name = serializers.CharField(source="customer.name", read_only=True)
+    merchant_name = serializers.CharField(source="merchant.name", read_only=True)
 
     class Meta:
         model = Invoice
-        fields = "__all__"
+        fields = [
+            "invoice_id",
+            "customer",
+            "customer_name",
+            "merchant",
+            "merchant_name",
+            "amount",
+            "due_date",
+            "created_at"
+        ]
 
 
 class DisputeSerializer(serializers.ModelSerializer):
-    transaction = serializers.StringRelatedField()
+    transaction_id = serializers.IntegerField(source="transaction.transaction_id", read_only=True)
+    merchant_name = serializers.CharField(source="transaction.merchant.name", read_only=True)
+    customer_name = serializers.CharField(source="transaction.customer.name", read_only=True)
 
     class Meta:
         model = Dispute
-        fields = "__all__"
+        fields = [
+            "dispute_id",
+            "transaction",
+            "transaction_id",
+            "merchant_name",
+            "customer_name",
+            "reason",
+            "status",
+            "opened_at",
+            "resolved_at"
+        ]
