@@ -34,71 +34,90 @@ This project integrates with an external **Currency Conversion API** to ensure s
 ```bash
 git clone https://github.com/<your-username>/Payment_API.git
 cd Payment_API
+```
 
-2️⃣ Create & Activate a Virtual Environment
+### 2️⃣ Create & Activate a Virtual Environment
+```bash
 python -m venv venv
 source venv/bin/activate    # On Mac/Linux
 venv\Scripts\activate       # On Windows
+```
 
-3️⃣ Install Dependencies
+### 3️⃣ Install Dependencies
+```bash
 pip install -r requirements.txt
+```
 
-4️⃣ Set Up Environment Variables
+### 4️⃣ Set Up Environment Variables
 
-Create a .env file in the root directory and add:
-
+Create a **.env** file in the root directory and add:
+```env
 SECRET_KEY=your_secret_key_here
 DEBUG=True
 ALLOWED_HOSTS=127.0.0.1,localhost
 EXCHANGE_RATE_API_KEY=your_api_key_here
 DATABASE_URL=your_database_connection_string
+```
 
+> **Note:** Sign up at [apilayer.com](https://apilayer.com/) to get your Exchange Rate API Key.
 
-Note: Sign up at apilayer.com
- to get your Exchange Rate API Key.
-
-5️⃣ Run Migrations
+### 5️⃣ Run Migrations
+```bash
 python manage.py makemigrations
 python manage.py migrate
+```
 
-6️⃣ Create a Superuser
+### 6️⃣ Create a Superuser
+```bash
 python manage.py createsuperuser
+```
 
-7️⃣ Start the Development Server
+### 7️⃣ Start the Development Server
+```bash
 python manage.py runserver
+```
 
-🔐 Authentication
+---
 
-We’re using DRF Token Authentication.
+## 🔐 Authentication
 
-1️⃣ Obtain Token
-curl -X POST http://127.0.0.1:8000/api-token-auth/ \
-  -H "Content-Type: application/json" \
-  -d '{"username":"your_username","password":"your_password"}'
+We’re using **DRF Token Authentication**.
 
-2️⃣ Use Token in Requests
+### 1️⃣ Obtain Token
+```bash
+curl -X POST http://127.0.0.1:8000/api-token-auth/   -H "Content-Type: application/json"   -d '{"username":"your_username","password":"your_password"}'
+```
 
-Include the token in the Authorization header:
-
+### 2️⃣ Use Token in Requests
+Include the token in the `Authorization` header:
+```http
 Authorization: Token <your_token>
+```
 
-🔗 API Endpoints
-Endpoint	Method	Description	Auth Required
-/api/merchants/	GET	List all merchants	✅
-/api/customers/	GET	List all customers	✅
-/api/payment-methods/	GET	List all payment methods	✅
-/api/transactions/	POST	Create a new transaction	✅
-/api/refunds/	POST	Create a refund	✅
-/api/payouts/	POST	Create a payout	✅
-/api/invoices/	GET	Fetch all invoices	✅
-/api/disputes/	GET	Manage disputes	✅
-🌍 Currency Conversion
+---
 
-Transactions automatically fetch live exchange rates from the ExchangeRate API.
+## 🔗 API Endpoints
+
+| Endpoint              | Method | Description              | Auth Required |
+|-----------------------|--------|--------------------------|---------------|
+| `/api/merchants/`     | GET    | List all merchants       | ✅ |
+| `/api/customers/`     | GET    | List all customers       | ✅ |
+| `/api/payment-methods/` | GET  | List all payment methods | ✅ |
+| `/api/transactions/`  | POST   | Create a new transaction | ✅ |
+| `/api/refunds/`       | POST   | Create a refund          | ✅ |
+| `/api/payouts/`       | POST   | Create a payout          | ✅ |
+| `/api/invoices/`      | GET    | Fetch all invoices       | ✅ |
+| `/api/disputes/`      | GET    | Manage disputes          | ✅ |
+
+---
+
+## 🌍 Currency Conversion
+
+Transactions automatically fetch live exchange rates from the **ExchangeRate API**.  
 If the API fails, we gracefully fallback to the original currency and amount.
 
-Example:
-
+**Example Response:**
+```json
 {
     "amount": "100.00",
     "currency": "USD",
@@ -106,11 +125,19 @@ Example:
     "converted_amount": "153000.00",
     "exchange_rate": "1530.00"
 }
+```
 
-🧪 Running Tests
+---
+
+## 🧪 Running Tests
+```bash
 python manage.py test
+```
 
-📂 Project Structure
+---
+
+## 📂 Project Structure
+```
 Payment_API/
 ├── api/
 │   ├── migrations/
@@ -125,28 +152,29 @@ Payment_API/
 ├── requirements.txt
 ├── README.md
 └── manage.py
+```
 
-📌 Next Steps
+---
 
-✅ Week 1: Project setup ✔️
+## 📌 Next Steps
 
-✅ Week 2: Authentication ✔️
+✅ **Week 1**: Project setup ✔️  
+✅ **Week 2**: Authentication ✔️  
+✅ **Week 3**: Currency conversion ✔️  
+✅ **Week 4**: Payment logic ✔️ *(merged with Week 3)*  
+🔄 **Week 5**: Write tests, documentation & prepare for presentation 🔜  
 
-✅ Week 3: Currency conversion ✔️
+---
 
-✅ Week 4: Payment logic ✔️ (Skipped, merged with Week 3)
+## 📜 License
 
-🔄 Week 5: Write tests, documentation & prepare for presentation 🔜
+This project is licensed under the **MIT License** — you’re free to use, modify, and distribute it.
 
-📜 License
+---
 
-This project is licensed under the MIT License — you’re free to use, modify, and distribute it.
+## 👩‍💻 Author
 
-👩‍💻 Author
-
-Amarachukwu “Mimi” Ekwugha
-📧 Email: your.email@example.com
-
-🌐 Portfolio: https://yourportfolio.com
-
+**Amarachukwu “Mimi” Ekwugha**  
+📧 Email: your.email@example.com  
+🌐 Portfolio: https://yourportfolio.com  
 🔗 LinkedIn: https://linkedin.com/in/yourprofile
