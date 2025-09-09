@@ -18,10 +18,18 @@ class Merchant(models.Model):
         ("inactive", "Inactive"),
         ("blocked", "Blocked"),
     ]
+    CURRENCY_CHOICES = [
+        ('USD', 'US Dollar'),
+        ('NGN', 'Nigerian Naira'),
+        ('EUR', 'Euro'),
+        ('GBP', 'British Pound'),
+        ('KES', 'Kenyan Shilling'),
+        ('GHS', 'Ghanaian Cedi'),
+    ]
     merchant_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="active")
-    default_currency = models.CharField(default="NGN")
+    default_currency = models.CharField(max_length=20, choices=CURRENCY_CHOICES, default="NGN")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
