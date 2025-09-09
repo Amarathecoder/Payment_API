@@ -26,28 +26,36 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
             "customer_name",
             "merchant",
             "merchant_name",
-            "type",
+            "method_type",
             "provider",
             "account_number",
             "expiry_date",
             "is_default",
-            "status",
             "currency",
             "created_at"
         ]
 
 
 class TransactionSerializer(serializers.ModelSerializer):
-    merchant = serializers.StringRelatedField()
-    customer = serializers.StringRelatedField()
-    # Change this to allow selection of payment methods
-    payment_method = serializers.PrimaryKeyRelatedField(
-        queryset=PaymentMethod.objects.all()
-    )
+    merchant_name = serializers.CharField(source="merchant.name", read_only=True)
+    customer_name = serializers.CharField(source="customer.name", read_only=True)
+    payment_method_type = serializers.CharField(source="payment_method.type", read_only=True)
 
     class Meta:
         model = Transaction
-        fields = "__all__"
+        fields = [
+            "transaction_id",
+            "merchant",
+            "merchant_name",      # Readable name
+            "customer",
+            "customer_name",      # Readable name
+            "payment_method",
+            "payment_method_type", # Readable type
+            "amount",
+            "currency",
+            "status",
+            "created_at"
+        ]
 
 
 class RefundSerializer(serializers.ModelSerializer):
