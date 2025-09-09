@@ -174,7 +174,7 @@ This project is licensed under the **MIT License** — you’re free to use, mod
 
 ## 👩‍💻 Author
 
-**Amarachukwu “Mimi” Ekwugha**  
-📧 Email: your.email@example.com  
-🌐 Portfolio: https://yourportfolio.com  
-🔗 LinkedIn: https://linkedin.com/in/yourprofile
+**Amarachukwu Ekwugha**  
+📧 Email: amarachukwuekwugha@gmail.com  
+🌐 Portfolio: https://tinyurl.com/AmarachukwuChidimma  
+🔗 LinkedIn: https://linkedin.com/in/amarachukwu-ekwugha
