@@ -52,7 +52,6 @@ class TransactionSerializer(serializers.ModelSerializer):
             "customer",
             "customer_name",      # Readable name
             "payment_method",
-            "payment_method_type", # Readable type
             "amount",
             "currency",
             "original_currency",

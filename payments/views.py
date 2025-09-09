@@ -6,6 +6,7 @@ import requests
 from decimal import Decimal
 from rest_framework.response import Response
 from django.http import JsonResponse
+from django.utils import timezone
 
 # Create your views here.
 def home(request):
@@ -85,3 +86,27 @@ class InvoiceViewSet(viewsets.ModelViewSet):
 class DisputeViewSet(viewsets.ModelViewSet):
     queryset = Dispute.objects.all()
     serializer_class = DisputeSerializer
+
+    def perform_update(self, serializer):
+        dispute = serializer.save()
+
+        # If dispute resolved and customer wins → auto-refund
+        if dispute.status == "RESOLVED" and not dispute.resolved_at:
+            dispute.resolved_at = timezone.now()
+            dispute.save()
+
+            transaction = dispute.transaction
+
+            # Check if transaction wasn't refunded already
+            existing_refund = Refund.objects.filter(transaction=transaction).first()
+            if not existing_refund:
+                Refund.objects.create(
+                    transaction=transaction,
+                    amount=transaction.amount,
+                    reason=f"Auto-refund for dispute {dispute.dispute_id}",
+                    status="INITIATED"
+                )
+
+                # Update transaction status
+                transaction.status = "REFUNDED"
+                transaction.save()
