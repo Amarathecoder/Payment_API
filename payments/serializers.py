@@ -39,7 +39,9 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     merchant_name = serializers.CharField(source="merchant.name", read_only=True)
     customer_name = serializers.CharField(source="customer.name", read_only=True)
-    payment_method_type = serializers.CharField(source="payment_method.type", read_only=True)
+    payment_method = serializers.PrimaryKeyRelatedField(
+        queryset=PaymentMethod.objects.all()
+    )
 
     class Meta:
         model = Transaction
