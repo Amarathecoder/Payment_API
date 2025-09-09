@@ -1,97 +1,152 @@
-PAYMENT API DOCUMENTATION
+# 💳 Payment API
 
-Project Overview
-
-This Payment API is a backend service designed to facilitate secure, seamless, and multi-currency online payments between customers and merchants. The API will handle payment initiation, transaction processing, refunds, and dispute resolution, while ensuring compliance with security and financial regulations.
-The goal is to provide a developer-friendly interface that can be integrated into e-commerce platforms, mobile applications, and other services requiring payment processing.
-
-Functional Requirements
-
-Core Features
-1. User Management:
-    Create and manage merchant and customer accounts.
-    Secure authentication (JWT or OAuth2).
-2. Payment Processing:
-    Initiate payments with support for multiple currencies.
-    Process credit/debit card and possibly mobile money payments.
-    Return payment status (success, pending, failed).
-3. Refund Management:
-    Initiate partial or full refunds.
-    Track refund status.
-4. Dispute Handling:
-    Allow customers or merchants to open disputes.
-    Track dispute resolution progress and outcomes.
-5. Transaction History:
-    Retrieve a list of all transactions for a user or merchant.
-    Provide detailed transaction records.
-6. Notifications:
-    Send payment confirmation, refund, and dispute updates via webhooks or email.
-
-Technical Requirements
-
-1. Backend
-    Framework: Django + Django REST Framework (DRF) for API development.
-    Database: MySQL (for relational data storage, ACID compliance).
-    ORM: Django ORM for database operations.
-    Authentication: This is done with the JWT-based authentication which is djangorestframework-simplejwt.
-    API Documentation: Swagger/OpenAPI for endpoint documentation.
-    Filtering & Pagination: django-filter for search/filtering, DRF pagination.
-    Security:
-        HTTPS for encrypted communication.
-        CSRF protection (for web-based interactions).
-        Data validation and sanitisation.
-2. Payment Gateway Integration
-    Use a sandbox or live API from a provider like Stripe, Paystack, or Flutterwave.
-    Store only minimal payment-related data — sensitive card details must never be stored.
-3. Infrastructure
-    Environment: Python 3.11+, Virtual Environment.
-    Hosting: Cloud-based (AWS, Render, or Railway).
-    Version Control: Git + GitHub for source code management.
-    Environment Variables: .env for sensitive configs (API keys, DB credentials).
-    Logging & Monitoring: Django logging + Sentry or similar for error tracking.
-4. Testing
-    Unit tests for all core functionalities (pytest or Django’s built-in test framework).
-    Mock payment gateway responses for testing without real transactions.
-
-
-# Payment API 💳
-
-A Django REST Framework-based **Payment API** that supports:
-- Merchant and customer management.
-- Multiple payment methods.
-- Secure transaction handling.
-- Refunds, payouts, invoices, and disputes.
-- Real-time currency conversion.
+A **Django REST Framework**-based **Payment API** that supports **multi-currency transactions**, **real-time currency conversion**, **merchant and customer management**, **refunds**, **payouts**, **invoices**, and **dispute handling**.  
+This project integrates with an external **Currency Conversion API** to ensure seamless international transactions.
 
 ---
 
 ## 🚀 Features
-- **Merchant & Customer Management**
-- **Payment Methods** (Cards, Bank, Mobile Money, etc.)
-- **Transaction Processing** with automatic status updates.
-- **Refunds & Disputes** handling.
-- **Payouts & Invoices** support.
-- **Real-time Currency Conversion** via external API.
+
+- 🔹 **User Authentication** — Secure token-based authentication using Django REST Framework.
+- 🔹 **Merchant & Customer Management** — Create, update, and manage merchants and customers.
+- 🔹 **Payment Methods** — Support for multiple payment types (cards, mobile money, bank).
+- 🔹 **Transactions** — Create and track transactions with real-time currency conversion.
+- 🔹 **Currency Conversion** — Fetch live exchange rates via [ExchangeRate API](https://apilayer.com/).
+- 🔹 **Refunds, Payouts, Invoices & Disputes** — Full financial workflow support.
+- 🔹 **Error Handling** — Graceful fallback when the exchange rate API is unavailable.
+- 🔹 **RESTful Endpoints** — Clean, structured endpoints for all operations.
 
 ---
 
-## 🛠 Tech Stack
-- **Backend:** Django, Django REST Framework
-- **Database:** PostgreSQL / MySQL (configurable)
-- **Authentication:** Token-based Authentication
-- **API Docs:** DRF Browsable API (Swagger optional)
-- **External APIs:** Exchange Rate API for currency conversion
+## 🛠️ Tech Stack
+
+- **Backend:** Django 5, Django REST Framework
+- **Database:** PostgreSQL (or MySQL / SQLite for local testing)
+- **API Integration:** ExchangeRate API (currency conversion)
+- **Authentication:** Token-based auth (DRF `authtoken`)
+- **Tools:** Python 3.12, pip, virtualenv, Postman/cURL
 
 ---
 
-## ⚡ Setup Instructions
+## ⚙️ Installation & Setup
 
-### **1. Clone the repository**
+### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/<your-username>/payment-api.git
-cd payment-api
+git clone https://github.com/<your-username>/Payment_API.git
+cd Payment_API
 
+2️⃣ Create & Activate a Virtual Environment
+python -m venv venv
+source venv/bin/activate    # On Mac/Linux
+venv\Scripts\activate       # On Windows
+
+3️⃣ Install Dependencies
+pip install -r requirements.txt
+
+4️⃣ Set Up Environment Variables
+
+Create a .env file in the root directory and add:
+
+SECRET_KEY=your_secret_key_here
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
+EXCHANGE_RATE_API_KEY=your_api_key_here
+DATABASE_URL=your_database_connection_string
+
+
+Note: Sign up at apilayer.com
+ to get your Exchange Rate API Key.
+
+5️⃣ Run Migrations
+python manage.py makemigrations
+python manage.py migrate
+
+6️⃣ Create a Superuser
+python manage.py createsuperuser
+
+7️⃣ Start the Development Server
+python manage.py runserver
+
+🔐 Authentication
+
+We’re using DRF Token Authentication.
+
+1️⃣ Obtain Token
+curl -X POST http://127.0.0.1:8000/api-token-auth/ \
+  -H "Content-Type: application/json" \
+  -d '{"username":"your_username","password":"your_password"}'
+
+2️⃣ Use Token in Requests
+
+Include the token in the Authorization header:
+
+Authorization: Token <your_token>
+
+🔗 API Endpoints
+Endpoint	Method	Description	Auth Required
+/api/merchants/	GET	List all merchants	✅
+/api/customers/	GET	List all customers	✅
+/api/payment-methods/	GET	List all payment methods	✅
+/api/transactions/	POST	Create a new transaction	✅
+/api/refunds/	POST	Create a refund	✅
+/api/payouts/	POST	Create a payout	✅
+/api/invoices/	GET	Fetch all invoices	✅
+/api/disputes/	GET	Manage disputes	✅
+🌍 Currency Conversion
+
+Transactions automatically fetch live exchange rates from the ExchangeRate API.
+If the API fails, we gracefully fallback to the original currency and amount.
+
+Example:
+
+{
+    "amount": "100.00",
+    "currency": "USD",
+    "merchant_currency": "NGN",
+    "converted_amount": "153000.00",
+    "exchange_rate": "1530.00"
+}
+
+🧪 Running Tests
+python manage.py test
+
+📂 Project Structure
+Payment_API/
+├── api/
+│   ├── migrations/
+│   ├── models.py          # Database models
+│   ├── serializers.py     # Data serializers
+│   ├── views.py           # API views & logic
+│   ├── urls.py            # API endpoints
+│   ├── tests.py           # Unit tests
+├── Payment_API/
+│   ├── settings.py        # Project settings
+│   ├── urls.py            # Root URL configs
+├── requirements.txt
+├── README.md
+└── manage.py
+
+📌 Next Steps
+
+✅ Week 1: Project setup ✔️
+
+✅ Week 2: Authentication ✔️
+
+✅ Week 3: Currency conversion ✔️
+
+✅ Week 4: Payment logic ✔️ (Skipped, merged with Week 3)
+
+🔄 Week 5: Write tests, documentation & prepare for presentation 🔜
 
 📜 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License — you’re free to use, modify, and distribute it.
+
+👩‍💻 Author
+
+Amarachukwu “Mimi” Ekwugha
+📧 Email: your.email@example.com
+
+🌐 Portfolio: https://yourportfolio.com
+
+🔗 LinkedIn: https://linkedin.com/in/yourprofile
